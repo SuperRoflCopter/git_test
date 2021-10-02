@@ -19,6 +19,7 @@ function Cat({ }) {
     // }
 
     console.log('fix error')
+    console.log('elias is the cutest one')
     const [catUrl, setCatUrl] = useState(undefined)
     useEffect(async () => {
         const catUrl = await getRandomCat() 
