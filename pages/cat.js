@@ -5,6 +5,8 @@ import { useCallback, useEffect, useState } from 'react'
 
 function Cat({ }) {
 
+    console.log("HTE")
+
     // Cat.getInitialProps = async (ctx) => {
     //     let catUrl = ""
     //     try {
