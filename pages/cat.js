@@ -29,6 +29,7 @@ function Cat({ }) {
         <Link href="./"><a>Home !</a></Link>
         <img src={catUrl?.file} style={{ width:'100%', height:'100%'}} />
         {/* {catUrl && <Image src={catUrl?.file} alt="cat" />} */}
+        <br />
     </div>
     )
   }
