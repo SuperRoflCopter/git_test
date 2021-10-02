@@ -13,6 +13,7 @@ export default function Home() {
 
       <main className={styles.main}>
         <Link href="./cat"><a>Cat !</a></Link>
+        <Link href="./create"><a>Create new task !</a></Link>
       </main>
     </div>
   )
