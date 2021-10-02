@@ -18,6 +18,7 @@ function Cat({ }) {
     //     return { catUrl }
     // }
 
+    console.log('fix error')
     const [catUrl, setCatUrl] = useState(undefined)
     useEffect(async () => {
         const catUrl = await getRandomCat() 
