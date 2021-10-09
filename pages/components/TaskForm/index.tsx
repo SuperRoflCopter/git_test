@@ -1,4 +1,6 @@
 import { useFormik } from 'formik'
+import { useState } from 'react'
+import { openTaskManagerDB } from '../../data/database'
 
 export type Interval = 'daily' | 'weekly' | 'monthly' | undefined
 export type TaskFormErrors = {
@@ -9,6 +11,7 @@ export type TaskFormErrors = {
 
 const TaskForm = () => {
 
+    const [ success, setSuccess ] = useState(false)
     const validate = values => {
         const errors: TaskFormErrors = {};
         const { label, startDate, interval } = values
@@ -28,7 +31,10 @@ const TaskForm = () => {
         } else if (interval !== 'daily' && interval !==  'weekly' && interval !== 'monthly') {
           errors.interval = 'Invalid interval';
         }
-      
+
+        if(!!errors.interval || !!errors.startDate || !!errors.label)
+          setSuccess(false)
+        
         return errors;
       }
 
@@ -41,7 +47,24 @@ const TaskForm = () => {
         validate,
         onSubmit: values => {
           const { label } = values
-          localStorage.setItem(`task${label}`, JSON.stringify(values))
+          // Add to local storage
+          localStorage.setItem(`task;${label}`, JSON.stringify(values))
+          // Add to IndexedDB
+          const DBOpenRequest = openTaskManagerDB()
+
+          DBOpenRequest.onsuccess = function(event) {
+            const db = DBOpenRequest.result;
+            addData(db)
+          }
+
+          const addData = (db) => {
+            var tasksObjectStore = db.transaction("tasks", "readwrite").objectStore("tasks")
+            const objectStoreRequest = tasksObjectStore.add(values);
+            objectStoreRequest.onsuccess = function(event) {
+              // update state success
+              setSuccess(true)
+            }
+          }
         },
       })
 
@@ -76,7 +99,11 @@ const TaskForm = () => {
             </select>
             <div style={{color:'red'}}>{formik.errors.interval}</div>
 
-            <button type="submit">Valider</button>
+            <br/>
+
+            <button type="submit" disabled={!formik.isValid} >Valider</button>
+
+            {(formik.submitCount > 0 && success) ? <div style={{color:'green'}}>The task was created successfully </div> : null}
           </div>
         </form>
       );

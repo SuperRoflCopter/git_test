@@ -19,9 +19,20 @@ function Cat({ }) {
     // }
 
     const [catUrl, setCatUrl] = useState(undefined)
-    useEffect(async () => {
-        const catUrl = await getRandomCat() 
-        setCatUrl(catUrl)
+    useEffect(() => {
+        async function setCatUrlAsync() {
+            const catUrl = await getRandomCat() 
+            setCatUrl(catUrl)
+        }
+        setCatUrlAsync()
+
+        async function getTasksAsync() {
+            const tasks = await fetch('http://localhost:3000/api/tasks')
+            .then(response => response.json())
+            .then(data => data)
+            console.log("tasks cat :", tasks)
+        }
+        getTasksAsync()
     }, [])
 
     return (
