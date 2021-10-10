@@ -2,7 +2,6 @@ import { useFormik } from 'formik'
 import { useState } from 'react'
 import { openTaskManagerDB } from '../../data/database'
 
-export type Interval = 'daily' | 'weekly' | 'monthly' | undefined
 export type TaskFormErrors = {
     label?: string
     startDate?: string
@@ -57,7 +56,21 @@ const TaskForm = () => {
             addData(db)
           }
 
-          const addData = (db) => {
+          const addData = async (db) => {
+            //postGRE
+            const result = await fetch(`http://${window.location.hostname}:${window.location.port}/api/tasks`, {
+                headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+                },
+                method: "POST",
+                body: JSON.stringify(values)
+            })
+            if(result.status === 500) {
+             alert("Error")
+            }
+
+            //local DB
             var tasksObjectStore = db.transaction("tasks", "readwrite").objectStore("tasks")
             const objectStoreRequest = tasksObjectStore.add(values);
             objectStoreRequest.onsuccess = function(event) {

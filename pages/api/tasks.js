@@ -5,12 +5,30 @@ const { config } = require('./configuration')
 export default async function handler(req, res) {
     const pool = new pg.Pool(config)
     const client = await pool.connect()
+
     if (req.method === 'GET') {
       const { rows } = await pool.query('SELECT * FROM tasks')
       client.release()
       res.statusCode = 200;
       res.setHeader('Content-Type', 'application/json');
       res.end(JSON.stringify(rows));
+    }
+    if(req.method === 'POST') {
+      const {
+        label,
+        interval,
+        startDate,
+      } = req.body
+      const result = await pool.query(`INSERT INTO tasks(label, "interval", "startDate")VALUES('${label}','${interval}',to_timestamp(${startDate}))`)
+      if(result?.severity === 'ERROR') {
+        res.statusCode = 500
+        res.end(result.detail)
+      }
+      console.log("result", result)
+      client.release()
+      res.statusCode = 200
+      res.setHeader('Content-Type', 'application/json')
+      res.end()
     } else {
       console.log('nothing')
     }

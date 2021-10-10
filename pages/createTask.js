@@ -1,7 +1,7 @@
 import TaskForm from './components/TaskForm'
 
-function Create() {
+function CreateTask() {
     return <TaskForm />
   }
   
-  export default Create
+  export default CreateTask
